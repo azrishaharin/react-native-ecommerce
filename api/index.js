@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const { mongoUrl, userSecretKey, userEmail } = require("./key_file");
 
 const app = express();
 const port = 8000;
@@ -17,7 +18,7 @@ app.use(bodyParser.json());
 
 const jwt = require("jsonwebtoken");
 
-mongoose.connect("mongodb+srv://azrishaharin94:DssIRRs5mgLcrGDz@cluster0.2nwa3no.mongodb.net/", {
+mongoose.connect(mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => {
@@ -35,8 +36,8 @@ const sendVerificationEmail = async (email, verificationToken) => {
     const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-            user: "azrishaharin94@gmail.com", // generated ethereal user
-            pass: "tltw mnbf cvvg gyjs", // generated ethereal password
+            user: userEmail, // generated ethereal user
+            pass: userSecretKey, // generated ethereal password
         },
     });
     //compose the email message
@@ -48,7 +49,7 @@ const sendVerificationEmail = async (email, verificationToken) => {
     //send the email
     try {
        await transporter.sendMail({
-            from: "azrishaharin94@gmail.com", // sender address
+            from: userEmail, // sender address
             to: email, // list of receivers
             subject: "Email Verification", // Subject line
             html: message, // html body
